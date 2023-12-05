@@ -3,7 +3,7 @@ let gamename2 = "Boss"
 
 
 function preload(){
-    backphoto = loadImage('data/Oscar.jpeg');
+    backphoto = loadImage('data/Oscar2.jpeg');
     bin1 = loadImage('data/bin1.png');
     bin2 = loadImage('data/bin2.png');
     bin3 = loadImage('data/bin3.png');
@@ -26,7 +26,7 @@ function setup(){
     image(trash1, 300, 300);
     trash2.resize(120,0); 
     image(trash2, 400,400);
-    startbutton = new Button(160,420,'Start')
+    startbutton = new Button(190,400,'Start')
 
     // image(bin3, 400,100);
     // image(trash1, random(600), random(600));
@@ -52,13 +52,13 @@ function draw(){
 
 function startPage(){ // displays the homescreen
     background(0);
-    backphoto.resize(1100,0); //Oscar the grouch photo
-    image(backphoto,-150,100); // loads Oscar photo
+    backphoto.resize(1210,0); //Oscar the grouch photo
+    image(backphoto, 0, 0); // loads Oscar photo
 
     fill('#314123'); //dark green 
     textFont(font1, 150); 
-    text(gamename, 20, 250); // Displays Game Name
-    text(gamename2, 20, 380);
+    text(gamename, 20, 200); // Displays Game Name
+    text(gamename2, 20, 330);
 
     startbutton.diplsay(); // displays start button 
 
