@@ -1,49 +1,32 @@
 let gamename = "Bin";
 let gamename2 = "Boss"
 
+let screen = 0;
+let trash = new Array(14);
+let myfonts = new Array(4);
+let startp = true;
 
 function preload(){
     backphoto = loadImage('data/Oscar2.jpeg');
     bin1 = loadImage('data/bin1.png');
     bin2 = loadImage('data/bin2.png');
     bin3 = loadImage('data/bin3.png');
-    trash1 = loadImage('data/trash1.png');
-    trash2 = loadImage('data/trash2.png');
-    trash3 = loadImage('data/trash3.png');
-    trash4 = loadImage('data/trash4.png');
-    font1 = loadFont('data/font1.otf');
-    font2 = loadFont('data/font2.ttf');
-    font3 = loadFont('data/font3.otf');
-    startp = true;
+
+    for (let i = 1; i< trash.length; i++){ //loads all 13 of my trash pngs
+        trash[i] = loadImage('data/trash' + i + '.png')
+    }
+
+    for (let f = 1; f<myfonts.length; f ++){ //loads my 3 fonts
+        myfonts[f] = loadFont('data/font' + f  + '.otf')
+    }
 }
 
 function setup(){
     createCanvas(800,800);
-    background(255);
-    image(bin1, 100, 450);
-    image(bin2, 500, 487);
-    trash1.resize(90,0);// resizes the image; makes it smaller 
-    image(trash1, 300, 300);
-    trash2.resize(120,0); 
-    image(trash2, 400,400);
-    startbutton = new Button(190,400,'Start')
-
-    // image(bin3, 400,100);
-    // image(trash1, random(600), random(600));
-    // image(trash2, random(600), random(600));
-    // image(trash3, random(600), random(600));
-    // image(trash4, random(600), random(600));
+    startbutton = new Button(190,400,'Start');
+    garbageitem = new Garbage(trash[1]);
 }
 function draw(){
-    // image(trash1, 300, 300);
-    // image(trash2, 400,400);
-    // fill('#6A9956');
-    // textFont(font1,100);
-    // text(texting, 100, 100);
-
-    // textFont(font2,100);
-    // text(texting, 100,300);
-
     if (startp){
         startPage();
     }
@@ -56,7 +39,7 @@ function startPage(){ // displays the homescreen
     image(backphoto, 0, 0); // loads Oscar photo
 
     fill('#314123'); //dark green 
-    textFont(font1, 150); 
+    textFont(myfonts[1], 150); 
     text(gamename, 20, 200); // Displays Game Name
     text(gamename2, 20, 330);
 
@@ -70,7 +53,34 @@ function startPage(){ // displays the homescreen
 }
 
 function mousePressed(){
+    if ((startbutton.inButton(mouseX, mouseY)) && (startp == true)){
+        screen = 0;
+        gameScreen();
+        startp = false; 
+    }
 
+
+}
+
+function gameScreen(){
+    background(255);
+    image(bin1, 100, 450);
+    image(bin2, 500, 487);
+    image(trash[1], 300,300);
+    garbageitem.display();
+
+    if (garbageitem.inImg(mouseX, mouseY)){ // Chnages the button color if the mosue is hovering over
+        garbageitem.highlight(255); // red
+    }else{
+        startbutton.changecol(0); // 
+    }
+
+
+
+    // trash[1].resize(90,0);// resizes the image; makes it smaller 
+    // image(trash[1], 300, 300);
+    // trash[2].resize(120,0); 
+    // image(trash[2], 400,400);
 }
 
 
@@ -87,7 +97,7 @@ class Button{ // makes a button
         fill(255, 100);
         rect(this.x -100, this.y - 20, 200, 40, 20);
         fill(this.colorshade);
-        textFont(font1, 30);
+        textFont(myfonts[1], 30);
         text(this.t, this.x-44, this.y + 10);
     }
 
@@ -103,5 +113,28 @@ class Button{ // makes a button
             return false;
         }
     }
+}
 
+class Garbage{
+
+    constructor(i, x, y){
+        this.i = i;
+        this.x = x;
+        this.y = y;
+    }
+    display(){// displays the image at a random location
+        this.i.resize(random(90,120), 0); //resizes the image object while keeping aspect ratio
+        image(this.i, random(100,700), random(50,430)); // puts the image in a random location
+    }
+    highlight(highlighter){ // tints the image a red color to highlight it
+        tint(highlighter,0,0,100);
+    }
+    inImg(x2, y2){// checks if mouse is inside the trash images
+        var d = dist(x2, y2, this.x, this.y);
+        if (d<100){
+            return true;
+        }else{
+            return false
+        }
+    }
 }
