@@ -1,3 +1,6 @@
+// Shirley Landeros
+// Creative Coding Final
+
 let gamename = "Bin";
 let gamename2 = "Boss"
 
@@ -5,6 +8,13 @@ let screen = 0;
 let trash = new Array(14);
 let myfonts = new Array(4);
 let startp = true;
+let gamep = false;
+let tx;
+let ty;
+let overTrash = false;
+let picked = false;
+let xOffset = 0.0; 
+let yOffset = 0.0; 
 
 function preload(){
     backphoto = loadImage('data/Oscar2.jpeg');
@@ -25,12 +35,43 @@ function setup(){
     createCanvas(800,800);
     startbutton = new Button(190,400,'Start');
     garbageitem = new Garbage(trash[1]);
+    tx = width/2.0;
+    ty = height/2.0;
 }
+
 function draw(){
     if (startp){
         startPage();
     }
+    if (gamep){
+        background(255);
+        gameScreen();
+        garbageitem.draw();
+    }
+}
 
+function mousePressed(){
+    if ((startbutton.inButton(mouseX, mouseY)) && (startp == true)){
+         screen = 0;
+         gameScreen();
+         startp = false;
+         gamep = true
+    }
+    if (gamep){
+        garbageitem.mousePressed();
+    }   
+}
+
+function mouseDragged(){
+    if(gamep){
+        garbageitem.mouseDragged();
+    }
+}
+
+function mouseReleased(){
+    if(gamep){
+        garbageitem.mouseReleased();
+    }
 }
 
 function startPage(){ // displays the homescreen
@@ -52,35 +93,9 @@ function startPage(){ // displays the homescreen
     }
 }
 
-function mousePressed(){
-    if ((startbutton.inButton(mouseX, mouseY)) && (startp == true)){
-        screen = 0;
-        gameScreen();
-        startp = false; 
-    }
-
-
-}
-
-function gameScreen(){
-    background(255);
+function gameScreen(){ 
     image(bin1, 100, 450);
-    image(bin2, 500, 487);
-    image(trash[1], 300,300);
-    garbageitem.display();
-
-    if (garbageitem.inImg(mouseX, mouseY)){ // Chnages the button color if the mosue is hovering over
-        garbageitem.highlight(255); // red
-    }else{
-        startbutton.changecol(0); // 
-    }
-
-
-
-    // trash[1].resize(90,0);// resizes the image; makes it smaller 
-    // image(trash[1], 300, 300);
-    // trash[2].resize(120,0); 
-    // image(trash[2], 400,400);
+    image(bin2, 500, 487);    
 }
 
 
@@ -117,24 +132,46 @@ class Button{ // makes a button
 
 class Garbage{
 
-    constructor(i, x, y){
+    constructor(i){
         this.i = i;
-        this.x = x;
-        this.y = y;
+        this.x = random(100,700);
+        this.y = random(50,430);
+        this.size = random(90,120);
     }
-    display(){// displays the image at a random location
-        this.i.resize(random(90,120), 0); //resizes the image object while keeping aspect ratio
-        image(this.i, random(100,700), random(50,430)); // puts the image in a random location
+    display(){
+        //this.i.resize(random(90,120), 0); //resizes the image object while keeping aspect ratio
     }
-    highlight(highlighter){ // tints the image a red color to highlight it
-        tint(highlighter,0,0,100);
+    draw(){// checks if mouse is inside the trash images ????
+        tint(255, 255, 255);
+        if (mouseX > tx-this.x && mouseX < tx+this.x && 
+            mouseY > ty-this.y && mouseY < ty+this.y) {
+            overTrash = true;
+        } else {
+            overTrash = false;
+        } 
+        image(this.i, tx, ty, this.size, this.size); // puts the image in a random location while giving it a random size 
     }
-    inImg(x2, y2){// checks if mouse is inside the trash images
-        var d = dist(x2, y2, this.x, this.y);
-        if (d<100){
-            return true;
-        }else{
-            return false
+
+    mousePressed() {
+        if(overTrash) { 
+          picked = true; 
+          
+        } else {
+          picked = false;
+         
         }
-    }
+        xOffset = mouseX-tx; 
+        yOffset = mouseY-ty; 
+      }
+
+    mouseDragged() {
+        if(picked) {
+          tx = mouseX-xOffset; 
+          ty = mouseY-yOffset; 
+        }
+      }
+      
+    mouseReleased() {
+        picked = false;
+      }
 }
