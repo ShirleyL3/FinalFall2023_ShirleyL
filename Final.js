@@ -44,7 +44,6 @@ function draw(){
         startPage();
     }
     if (gamep){
-        background(255);
         gameScreen();
         garbageitem.draw();
     }
@@ -94,6 +93,16 @@ function startPage(){ // displays the homescreen
 }
 
 function gameScreen(){ 
+    background(255);
+    fill('#314123');
+    textFont(myfonts[1],40);
+    text('Time:', 30,50);
+    text('Trash Left:', 30,100);
+    // score keeper
+    //https://editor.p5js.org/ehersh/sketches/Hk52gNXR7//
+
+    //timer coutdown: https://editor.p5js.org/denaplesk2/sketches/ryIBFP_lG
+
     image(bin1, 100, 450);
     image(bin2, 500, 487);    
 }
@@ -138,9 +147,11 @@ class Garbage{
         this.y = random(50,430);
         this.size = random(90,120);
     }
+
     display(){
         //this.i.resize(random(90,120), 0); //resizes the image object while keeping aspect ratio
     }
+
     draw(){// checks if mouse is inside the trash images ????
         tint(255, 255, 255);
         if (mouseX > tx-this.x && mouseX < tx+this.x && 
@@ -162,16 +173,16 @@ class Garbage{
         }
         xOffset = mouseX-tx; 
         yOffset = mouseY-ty; 
-      }
+    }
 
     mouseDragged() {
         if(picked) {
           tx = mouseX-xOffset; 
           ty = mouseY-yOffset; 
         }
-      }
+    }
       
     mouseReleased() {
         picked = false;
-      }
+    }
 }
