@@ -15,6 +15,7 @@ let overTrash = false;
 let picked = false;
 let xOffset = 0.0; 
 let yOffset = 0.0; 
+let countdown = 20;
 
 function preload(){
     backphoto = loadImage('data/Oscar2.jpeg');
@@ -37,6 +38,7 @@ function setup(){
     garbageitem = new Garbage(trash[1]);
     tx = width/2.0;
     ty = height/2.0;
+    setInterval(timeCount, 1000);
 }
 
 function draw(){
@@ -95,9 +97,19 @@ function startPage(){ // displays the homescreen
 function gameScreen(){ 
     background(255);
     fill('#314123');
-    textFont(myfonts[1],40);
-    text('Time:', 30,50);
+    textFont(myfonts[3],40);
+    // text('Time:', 30,50);
     text('Trash Left:', 30,100);
+    if (countdown >= 20) {
+        text("Time:" + countdown, 30, 50);
+    }
+    if (countdown < 20) {
+        text("Time:" + countdown, 30 , 50);
+    }
+    if (countdown == 0) {
+        /// New fucntion
+    }
+
     // score keeper
     //https://editor.p5js.org/ehersh/sketches/Hk52gNXR7//
 
@@ -106,6 +118,17 @@ function gameScreen(){
     image(bin1, 100, 450);
     image(bin2, 500, 487);    
 }
+
+function timer(){
+    
+}
+function timeCount() {
+    if (countdown> 0) {
+      countdown--;
+    }
+  }
+
+//function for tracking number of trash left 
 
 
 class Button{ // makes a button
