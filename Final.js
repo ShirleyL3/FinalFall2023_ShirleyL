@@ -6,6 +6,7 @@ let gamename2 = "Boss"
 
 let screen = 0;
 let trash = new Array(14);
+let trashlst = []
 let myfonts = new Array(4);
 let startp = true;
 let gamep = false;
@@ -35,7 +36,15 @@ function preload(){
 function setup(){
     createCanvas(800,800);
     startbutton = new Button(190,400,'Start');
-    garbageitem = new Garbage(trash[1]);
+
+    // garbageitem = new Garbage(trash[1]);
+
+    for(let g = 1; g< trash.length; g++){ // iterates through trash array
+        for(let i = 0; i <10; i++){ // adds trash objects to a list 
+            trashlst[i] = new Garbage(trash[g], random(100,700), random(50,430));
+        }
+    }
+
     tx = width/2.0;
     ty = height/2.0;
     setInterval(timeCount, 1000);
@@ -47,7 +56,10 @@ function draw(){
     }
     if (gamep){
         gameScreen();
-        garbageitem.draw();
+        for (let i = 0; i< trashlst.length; i++){
+            trashlst[i].draw();
+        }
+        // garbageitem.draw();
     }
 }
 
@@ -59,20 +71,28 @@ function mousePressed(){
          gamep = true
     }
     if (gamep){
-        garbageitem.mousePressed();
+        for (let i = 0; i< trashlst.length; i++){
+            trashlst[i].mousePressed();
+        }
+        // garbageitem.mousePressed();
     }   
 }
 
 function mouseDragged(){
     if(gamep){
-        garbageitem.mouseDragged();
+        for (let i = 0; i< trashlst.length; i++){
+            trashlst[i].mouseDragged();
+        }
+        // garbageitem.mouseDragged();
     }
 }
 
 function mouseReleased(){
     if(gamep){
-        garbageitem.mouseReleased();
-    }
+        for (let i = 0; i< trashlst.length; i++){
+            trashlst[i].mouseReleased();
+        }
+     }
 }
 
 function startPage(){ // displays the homescreen
@@ -100,11 +120,11 @@ function gameScreen(){
     textFont(myfonts[3],40);
     // text('Time:', 30,50);
     text('Trash Left:', 30,100);
-    if (countdown >= 20) {
-        text("Time:" + countdown, 30, 50);
-    }
-    if (countdown < 20) {
-        text("Time:" + countdown, 30 , 50);
+
+    //Timer 
+    
+    if (countdown <= 20) {
+        text("Time: " + countdown, 30 , 50);
     }
     if (countdown == 0) {
         /// New fucntion
@@ -113,20 +133,15 @@ function gameScreen(){
     // score keeper
     //https://editor.p5js.org/ehersh/sketches/Hk52gNXR7//
 
-    //timer coutdown: https://editor.p5js.org/denaplesk2/sketches/ryIBFP_lG
-
     image(bin1, 100, 450);
     image(bin2, 500, 487);    
 }
 
-function timer(){
-    
-}
-function timeCount() {
-    if (countdown> 0) {
+function timeCount() { // Starts coutdown once on Game Page
+    if (countdown> 0 && gamep == true){
       countdown--;
     }
-  }
+}
 
 //function for tracking number of trash left 
 
@@ -164,26 +179,22 @@ class Button{ // makes a button
 
 class Garbage{
 
-    constructor(i){
+    constructor(i,x,y){
         this.i = i;
-        this.x = random(100,700);
-        this.y = random(50,430);
+        this.x = x;
+        this.y = y;
         this.size = random(90,120);
     }
 
-    display(){
-        //this.i.resize(random(90,120), 0); //resizes the image object while keeping aspect ratio
-    }
-
-    draw(){// checks if mouse is inside the trash images ????
+    draw(){// checks if mouse is inside the trash images
         tint(255, 255, 255);
         if (mouseX > tx-this.x && mouseX < tx+this.x && 
             mouseY > ty-this.y && mouseY < ty+this.y) {
             overTrash = true;
         } else {
             overTrash = false;
-        } 
-        image(this.i, tx, ty, this.size, this.size); // puts the image in a random location while giving it a random size 
+        } // chnaged tx and ty
+        image(this.i, this.x, this.y, this.size, this.size); // puts the image in a random location while giving it a random size 
     }
 
     mousePressed() {
