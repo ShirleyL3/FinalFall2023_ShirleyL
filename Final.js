@@ -6,7 +6,7 @@ let gamename2 = "Boss"
 
 let screen = 0;
 let trash = new Array(13);
-let trashlst = [];
+let trashlst = new Array(13);
 let myfonts = new Array(4);
 let startp = true;
 let gamep = false;
@@ -15,6 +15,7 @@ let ty;
 let countdown = 20;
 let bin1;
 let bin2;
+let trashcount = 13;
 
 function preload(){
     backphoto = loadImage('data/Oscar2.jpeg');
@@ -36,7 +37,8 @@ function setup(){
     startbutton = new Button(190,400,'Start');
 
     for(let g = 0; g< trash.length; g++){ // iterates through trash array
-        trashlst.push( new Garbage(trash[g], random(100,700), random(50,430), g));
+        trashlst[g] = new Garbage(trash[g], random(100,700), random(50,430), g);
+        //trashlst.push(new Garbage(trash[g], random(100,700), random(50,430), g));
     }
 
     setInterval(timeCount, 1000);
@@ -107,7 +109,7 @@ function gameScreen(){
     background(255);
     fill('#314123');
     textFont(myfonts[3],40);
-    text('Trash Left:', 30,100);
+    text('Trash Left: ' + trashcount, 30,100);
 
     //Timer 
     if (countdown <= 20) {
@@ -214,19 +216,30 @@ class Garbage{
     }
 
     inbin(){
+
         if (this.x > 100 && this.x < 300 && 
-            this.y > 450 && this.y < 550){
-                // if (this.type == 2){ // type of garbage
-                    for(let i = 0; i< trashlst.length; i++){
-                        if (i == this.type){
-                            trashlst.splice(i,1);
+            this.y > 450 && this.y < 550){ // 
+                if (this.type == 1 || this.type == 2 || this.type ==3 || this.type == 5
+                    || this.type ==6 || this.type ==7 || this.type ==8 || this.type == 11 || this.type == 12 ){
+                    for (let i = 0; i < trashlst.length; i++){
+                        if(trashlst[i].type == this.type){
+                            trashlst.splice(i, 1);
+                            trashcount -= 1;
                         }
-                }
-                // this.type = i;
-        } //if-statement
+                    }
+                } //if stat
+        } //if stat
+
         if (this.x>500 && this.x < 600 &&
-            this.y >487 && this.y < 587){
-            // bin2
-        }
-    }
-}
+            this.y >437 && this.y < 487){
+                if (this.type == 0 || this.type ==4 || this.type == 9 || this.type == 10){
+                    for (let i = 0; i < trashlst.length; i++){
+                        if(trashlst[i].type == this.type){
+                            trashlst.splice(i, 1);
+                            trashcount -=1;
+                        } // if stat
+                    } // for loop
+                }// if stat
+        } //if stat
+    } // inBin Class
+}// class 
