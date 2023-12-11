@@ -5,18 +5,16 @@ let gamename = "Bin";
 let gamename2 = "Boss"
 
 let screen = 0;
-let trash = new Array(14);
-let trashlst = []
+let trash = new Array(13);
+let trashlst = [];
 let myfonts = new Array(4);
 let startp = true;
 let gamep = false;
 let tx;
 let ty;
-let overTrash = false;
-let picked = false;
-let xOffset = 0.0; 
-let yOffset = 0.0; 
 let countdown = 20;
+let bin1;
+let bin2;
 
 function preload(){
     backphoto = loadImage('data/Oscar2.jpeg');
@@ -24,11 +22,11 @@ function preload(){
     bin2 = loadImage('data/bin2.png');
     bin3 = loadImage('data/bin3.png');
 
-    for (let i = 1; i< trash.length; i++){ //loads all 13 of my trash pngs
-        trash[i] = loadImage('data/trash' + i + '.png')
+    for (let i = 0; i< trash.length; i++){ //loads all 13 of my trash pngs
+        trash[i] = loadImage('data/trash' + i + '.png');
     }
 
-    for (let f = 1; f<myfonts.length; f ++){ //loads my 3 fonts
+    for (let f = 1; f< myfonts.length; f ++){ //loads my 3 fonts
         myfonts[f] = loadFont('data/font' + f  + '.otf')
     }
 }
@@ -37,16 +35,10 @@ function setup(){
     createCanvas(800,800);
     startbutton = new Button(190,400,'Start');
 
-    // garbageitem = new Garbage(trash[1]);
-
-    for(let g = 1; g< trash.length; g++){ // iterates through trash array
-        for(let i = 0; i <10; i++){ // adds trash objects to a list 
-            trashlst[i] = new Garbage(trash[g], random(100,700), random(50,430));
-        }
+    for(let g = 0; g< trash.length; g++){ // iterates through trash array
+        trashlst.push( new Garbage(trash[g], random(100,700), random(50,430), g));
     }
 
-    tx = width/2.0;
-    ty = height/2.0;
     setInterval(timeCount, 1000);
 }
 
@@ -59,7 +51,6 @@ function draw(){
         for (let i = 0; i< trashlst.length; i++){
             trashlst[i].draw();
         }
-        // garbageitem.draw();
     }
 }
 
@@ -74,7 +65,6 @@ function mousePressed(){
         for (let i = 0; i< trashlst.length; i++){
             trashlst[i].mousePressed();
         }
-        // garbageitem.mousePressed();
     }   
 }
 
@@ -83,7 +73,6 @@ function mouseDragged(){
         for (let i = 0; i< trashlst.length; i++){
             trashlst[i].mouseDragged();
         }
-        // garbageitem.mouseDragged();
     }
 }
 
@@ -118,11 +107,9 @@ function gameScreen(){
     background(255);
     fill('#314123');
     textFont(myfonts[3],40);
-    // text('Time:', 30,50);
     text('Trash Left:', 30,100);
 
     //Timer 
-    
     if (countdown <= 20) {
         text("Time: " + countdown, 30 , 50);
     }
@@ -134,7 +121,7 @@ function gameScreen(){
     //https://editor.p5js.org/ehersh/sketches/Hk52gNXR7//
 
     image(bin1, 100, 450);
-    image(bin2, 500, 487);    
+    image(bin2, 500, 487);
 }
 
 function timeCount() { // Starts coutdown once on Game Page
@@ -179,44 +166,67 @@ class Button{ // makes a button
 
 class Garbage{
 
-    constructor(i,x,y){
+    constructor(i,x,y,type){ //image, position x, position y
         this.i = i;
         this.x = x;
         this.y = y;
+        this.type = type
         this.size = random(90,120);
+        this.overTrash = false;
+        this.picked = false;
+        this.xOffset = 0.0; 
+        this.yOffset = 0.0; 
+
     }
 
     draw(){// checks if mouse is inside the trash images
-        tint(255, 255, 255);
-        if (mouseX > tx-this.x && mouseX < tx+this.x && 
-            mouseY > ty-this.y && mouseY < ty+this.y) {
-            overTrash = true;
+        if (mouseX > this.x && mouseX < this.x+this.size && 
+            mouseY > this.y && mouseY < this.y+this.size) { // checks if mouse is in image
+            this.overTrash = true;
         } else {
-            overTrash = false;
+            this.overTrash = false;
         } // chnaged tx and ty
         image(this.i, this.x, this.y, this.size, this.size); // puts the image in a random location while giving it a random size 
     }
 
     mousePressed() {
-        if(overTrash) { 
-          picked = true; 
-          
+        if(this.overTrash) { 
+            this.picked = true;
+
         } else {
-          picked = false;
+          this.picked = false;
          
         }
-        xOffset = mouseX-tx; 
-        yOffset = mouseY-ty; 
+        this.xOffset = mouseX-this.x; // movement of each unique object
+        this.yOffset = mouseY-this.y; 
     }
 
     mouseDragged() {
-        if(picked) {
-          tx = mouseX-xOffset; 
-          ty = mouseY-yOffset; 
+        if(this.picked) {
+          this.x = mouseX-this.xOffset; // new unique position
+          this.y = mouseY-this.yOffset; 
         }
     }
       
     mouseReleased() {
-        picked = false;
+        this.picked = false; //drops unique object
+        this.inbin();
+    }
+
+    inbin(){
+        if (this.x > 100 && this.x < 300 && 
+            this.y > 450 && this.y < 550){
+                // if (this.type == 2){ // type of garbage
+                    for(let i = 0; i< trashlst.length; i++){
+                        if (i == this.type){
+                            trashlst.splice(i,1);
+                        }
+                }
+                // this.type = i;
+        } //if-statement
+        if (this.x>500 && this.x < 600 &&
+            this.y >487 && this.y < 587){
+            // bin2
+        }
     }
 }
