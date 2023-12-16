@@ -18,6 +18,9 @@ let countdown = 20;
 let bin1;
 let bin2;
 let trashcount = 13;
+let lastMessage = 'In our relentless pursuit of progress, we have overlooked a crucial reality: our planet is suffering. Pollution, in various forms, is suffocating our home. From polluted air to oceans choked with plastic, our actions are pushing our world to the brink. Time is slipping away. We are running out of opportunities to reverse the damage. This is nott just about saving the planet; it is about safeguarding our future. We must act urgently to preserve the Earth, our only home, before it is too late.'
+let messageChar = 0;
+let margin = 25;
 
 function preload(){
     backphoto = loadImage('data/Oscar.jpeg');
@@ -39,21 +42,23 @@ function preload(){
     for (let r = 0; r< rescueImg.length; r ++){ //loads my 5 rescue Images
         rescueImg[r] = loadImage('data/rescue' + r  + '.jpeg')
     }
-
 }
 
 function setup(){
     createCanvas(800,800);
     startbutton = new Button(190,400,'Start');
+    playAgain = new Button(400,650,'Again?');
 
     for(let g = 0; g< trash.length; g++){ // iterates through trash array
         trashlst[g] = new Garbage(trash[g], random(100,700), random(50,430), g);
     }
     setInterval(timeCount, 1000);
+    frameRate(20);
 }
 
 function draw(){
     if (startp){
+        frameCount = 0;
         startPage();
     }
     if (gamep){
@@ -63,61 +68,77 @@ function draw(){
         for (let i = 0; i< trashlst.length; i++){
             trashlst[i].draw(); // displays trash
         } 
-        
-        
         if (trashcount > 0 && countdown == 0){ //if you lose
-            // tried to reset to zero but framecount doesnt continously incriment 
             frameRate(20);
-            if (frameCount < 100){
+
+            // tried to reset to zero but framecount doesnt continously incriment 
+            // frameRate(5);
+
+            if (frameCount  < 500){
                 image(pollutionImg[0],0,0);
                 endText(1);
             } 
-            else if (frameCount < 200){
+            else if (frameCount < 580){
                 background(0);
                 image(pollutionImg[1], 0, 0, 0, 800);
                 endText(1);
             } 
-            else if (frameCount < 300){
+            else if (frameCount < 660){
                 image(pollutionImg[2], 0, 0);
                 endText(1);
             }
-            else if (frameCount < 400){
+            else if (frameCount < 740){
                 image(pollutionImg[3], 0, 0, 1000, 800);
                 endText(1);
             }
-            else if (frameCount < 500){
+            else if (frameCount < 820){
                 image(pollutionImg[4], 0, 0);
                 endText(1);
             }
-            if (frameCount > 500) frameCount = 0;
-            console.log(frameCount);
+            // if (frameCount > 500) frameCount = 0;
+            else if (frameCount> 821){
+                gamep = false;
+                endPage();
+            }
+            
+            // console.log(frameCount);
         }
-        if (trashcount== 0 && countdown >= 0){
-            frameRate(20);
-            if (frameCount < 100){
-                image(rescueImg[0],0,0,800,800);
+        if (trashcount== 0 && countdown >= 0){ //if won
+            // tried to reset to zero but framecount doesnt continously incriment 
+            // frameRate(40);
+            
+            if (frameCount  < 100){
+                
+                image(pollutionImg[0],0,0);
                 endText(2);
             } 
             else if (frameCount < 200){
-                image(rescueImg[1], 0, 0);
+                background(0);
+                image(pollutionImg[1], 0, 0, 0, 800);
                 endText(2);
             } 
             else if (frameCount < 300){
-                image(rescueImg[2], 0, 0);
+                image(pollutionImg[2], 0, 0);
                 endText(2);
             }
             else if (frameCount < 400){
-                image(rescueImg[3], 0, 0);
+                image(pollutionImg[3], 0, 0, 1000, 800);
                 endText(2);
             }
             else if (frameCount < 500){
-                image(rescueImg[4], 0, 0);
+                image(pollutionImg[4], 0, 0);
                 endText(2);
             }
-            if (frameCount > 500) frameCount = 0;
-            console.log(frameCount);
+            // if (frameCount > 500) frameCount = 0;
+            else if (frameCount> 500){
+                gamep = false;
+                endPage();
+            }
         }
         // if state.
+    }
+    if ((gamep == false) && (startp == false)){
+        endPage();
     } // gamep if state. 
 }// end of draw
 
@@ -142,6 +163,12 @@ function mousePressed(){
          gameScreen();
          startp = false;
          gamep = true
+    }
+    if (playAgain.inButton(mouseX, mouseY)){
+        startp = true;
+        startPage();
+        gamep = false;
+        frameCount = frameCount%120;
     }
     if (gamep){
         for (let i = 0; i< trashlst.length; i++){
@@ -185,6 +212,32 @@ function startPage(){ // displays the homescreen
     }
 }
 
+
+function endPage(){ // displays the letter at the end of the game
+    
+    background(0);
+    let currString = lastMessage.substring(0, messageChar); // returns all characters of the lastMessage str
+
+    // Draw the current string with some margins
+    push();
+    fill('#EA0F00'); //red
+    textFont(myfonts[1],35);
+    textAlign(CENTER, TOP);
+    text(currString, margin + 10, margin + 10, width - margin*2, height - margin);
+    pop();
+
+    messageChar += random(0,1); // Increase the current character and this also changes teh pace of the characters displayed
+
+    playAgain.diplsay(); // displays play again button 
+
+    if (playAgain.inButton(mouseX, mouseY)){ // Chnages the button color if the mosue is hovering over
+        playAgain.changecol(255); // white
+    }else{
+        playAgain.changecol('#314123'); // back to green 
+    }
+    
+}
+
 function gameScreen(){ 
     background(255);
     fill('#314123');
@@ -192,8 +245,14 @@ function gameScreen(){
     text('Trash Left: ' + trashcount, 30,100); // keeps track of trash left 
 
     //Timer 
-    if (countdown <= 20) {
+    if (countdown <= 30 && countdown > 10) {
         text("Time: " + countdown, 30 , 50);
+    }
+    if (countdown <= 10){
+        text('Time:', 30,50);
+        fill('#EA0F00'); //red
+        textSize(140);
+        text(countdown, 400 , 200);
     }
 
     image(bin1, 100, 450);
