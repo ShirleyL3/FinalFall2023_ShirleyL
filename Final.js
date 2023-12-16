@@ -58,86 +58,77 @@ function setup(){
 
 function draw(){
     if (startp){
-        frameCount = 0;
+        frameCount = 0; // is constantly zero until game page starts 
         startPage();
     }
     if (gamep){
-        console.log(frameCount)
+        // console.log(frameCount)
         gameScreen();
         
         for (let i = 0; i< trashlst.length; i++){
             trashlst[i].draw(); // displays trash
         } 
         if (trashcount > 0 && countdown == 0){ //if you lose
-            frameRate(20);
+            frameRate(20); // 20 frames per second 
 
-            // tried to reset to zero but framecount doesnt continously incriment 
-            // frameRate(5);
-
-            if (frameCount  < 500){
+            if (frameCount < 460){ 
                 image(pollutionImg[0],0,0);
+                endText(1);
+            } 
+            else if (frameCount < 520){
+                image(pollutionImg[1], 0, 0, 0, 800);
                 endText(1);
             } 
             else if (frameCount < 580){
-                background(0);
-                image(pollutionImg[1], 0, 0, 0, 800);
-                endText(1);
-            } 
-            else if (frameCount < 660){
                 image(pollutionImg[2], 0, 0);
                 endText(1);
             }
-            else if (frameCount < 740){
+            else if (frameCount < 640){
                 image(pollutionImg[3], 0, 0, 1000, 800);
                 endText(1);
             }
-            else if (frameCount < 820){
+            else if (frameCount < 700){
                 image(pollutionImg[4], 0, 0);
                 endText(1);
             }
-            // if (frameCount > 500) frameCount = 0;
-            else if (frameCount> 821){
+            else if (frameCount >= 700){
+                background(0);
                 gamep = false;
                 endPage();
             }
-            
             // console.log(frameCount);
         }
         if (trashcount== 0 && countdown >= 0){ //if won
-            // tried to reset to zero but framecount doesnt continously incriment 
-            // frameRate(40);
             
-            if (frameCount  < 100){
-                
+            if (frameCount  < 460){
                 image(pollutionImg[0],0,0);
                 endText(2);
             } 
-            else if (frameCount < 200){
-                background(0);
+            else if (frameCount < 520){
                 image(pollutionImg[1], 0, 0, 0, 800);
                 endText(2);
             } 
-            else if (frameCount < 300){
+            else if (frameCount < 580){
                 image(pollutionImg[2], 0, 0);
                 endText(2);
             }
-            else if (frameCount < 400){
+            else if (frameCount < 640){
                 image(pollutionImg[3], 0, 0, 1000, 800);
                 endText(2);
             }
-            else if (frameCount < 500){
+            else if (frameCount < 700){
                 image(pollutionImg[4], 0, 0);
                 endText(2);
             }
             // if (frameCount > 500) frameCount = 0;
-            else if (frameCount> 500){
+            else if (frameCount >= 700){
+                background(0);
                 gamep = false;
                 endPage();
             }
-        }
-        // if state.
+        }// if state.
     }
-    if ((gamep == false) && (startp == false)){
+    if ((gamep == false) && (startp == false)){ // shows ending text
         endPage();
     } // gamep if state. 
 }// end of draw
@@ -158,26 +149,26 @@ function endText(num){ // Displays ending text
 }
 
 function mousePressed(){
-    if ((startbutton.inButton(mouseX, mouseY)) && (startp == true)){
+    if ((startbutton.inButton(mouseX, mouseY)) && (startp == true)){ // once start button pressed
          screen = 0;
          gameScreen();
          startp = false;
          gamep = true
     }
-    if (playAgain.inButton(mouseX, mouseY)){
+    if (playAgain.inButton(mouseX, mouseY)){ // once play again pressed
         startp = true;
         startPage();
         gamep = false;
         frameCount = frameCount%120;
     }
     if (gamep){
-        for (let i = 0; i< trashlst.length; i++){
+        for (let i = 0; i< trashlst.length; i++){ // trash items being pressed 
             trashlst[i].mousePressed();
         }
     }   
 }
 
-function mouseDragged(){
+function mouseDragged(){ //moving the trash objects by dragging
     if(gamep){
         for (let i = 0; i< trashlst.length; i++){
             trashlst[i].mouseDragged();
@@ -185,7 +176,7 @@ function mouseDragged(){
     }
 }
 
-function mouseReleased(){
+function mouseReleased(){ // drops mouse at new postion when released
     if(gamep){
         for (let i = 0; i< trashlst.length; i++){
             trashlst[i].mouseReleased();
@@ -218,12 +209,12 @@ function endPage(){ // displays the letter at the end of the game
     background(0);
     let currString = lastMessage.substring(0, messageChar); // returns all characters of the lastMessage str
 
-    // Draw the current string with some margins
+    // prints the message string with some margins
     push();
     fill('#EA0F00'); //red
     textFont(myfonts[1],35);
     textAlign(CENTER, TOP);
-    text(currString, margin + 10, margin + 10, width - margin*2, height - margin);
+    text(currString, margin + 10, margin + 10, width - margin*2, height - margin);// keeps text from going out of web frame
     pop();
 
     messageChar += random(0,1); // Increase the current character and this also changes teh pace of the characters displayed
@@ -257,6 +248,7 @@ function gameScreen(){
 
     image(bin1, 100, 450);
     image(bin2, 500, 487);
+    console.log(mouseX,mouseY);
 }
 
 function timeCount() { // Starts coutdown once on Game Page
@@ -277,6 +269,7 @@ class Garbage{
         this.picked = false;
         this.xOffset = 0.0; 
         this.yOffset = 0.0;
+        this.found = false;
     }
 
     draw(){// checks if mouse is inside the trash images
@@ -313,31 +306,64 @@ class Garbage{
         this.inbin(); 
     }
 
-    inbin(){ // checks if the trash item is in either of the bins 
+    correctbin(){
+        stroke('#34C941');// Green
+        strokeWeight(15);
+        line(360,631, 410,700);
+        line(410,700, 460, 550);
+    }
 
+    wrongbin(){
+        stroke('#D11A0F'); //red
+        strokeWeight(15);
+        line(340,560, 480,700);
+        line(480,560, 340,700);
+    }
+
+    inbin(){ // checks if the trash item is in either of the bins 
+        // bin 1
+        
         if (this.x > 100 && this.x < 300 && 
-            this.y > 450 && this.y < 550){ // checks if the image is in the area of the garbage bin
+            this.y > 400 && this.y < 600){ // checks if the image is in the area of the garbage bin
                 if (this.type == 1 || this.type == 2 || this.type ==3 || this.type == 5
                     || this.type ==6 || this.type ==7 || this.type ==8 || this.type == 11 || this.type == 12 ){ // these specific items belong in bin1
                     for (let i = 0; i < trashlst.length; i++){ 
                         if(trashlst[i].type == this.type){ // if the type in the list matches the types in the if loop
                             trashlst.splice(i, 1); // deletes i and takes in index and # of items to del
                             trashcount -= 1; // deincrements the count by 1 if del
+                            this.found = true
                         } // if stat
                     } //for loop
                 } //if stat
+                else if (!this.found){
+                    this.wrongbin();
+                    stroke(255);
+                    strokeWeight(0);
+                    this.found = true;
+                }
         } //if stat
 
-        if (this.x>500 && this.x < 600 &&
-            this.y >437 && this.y < 487){
+
+        //bin2
+        
+        if (this.x>500 && this.x < 700 &&
+            this.y >400 && this.y < 600){
                 if (this.type == 0 || this.type ==4 || this.type == 9 || this.type == 10){ // these items belong to bin2
                     for (let i = 0; i < trashlst.length; i++){
                         if(trashlst[i].type == this.type){
                             trashlst.splice(i, 1);
                             trashcount -=1;
+                            this.found = true;
                         } // if stat
                     } // for loop
+                    
                 }// if stat
+                else if (!this.found){
+                    this.wrongbin();
+                    stroke(255);
+                    strokeWeight(0);
+                    this.found = true;
+                }
         } //if stat
     } // inBin Class
 }// class 
