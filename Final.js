@@ -59,7 +59,7 @@ function setup(){
 }
 
 function draw(){
-    console.log(frameCount)
+    // console.log(frameCount)
     if (startp){
         frameCount = 0; // is constantly zero until game page starts 
         startPage();
