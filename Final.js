@@ -18,7 +18,7 @@ let countdown = 20;
 let bin1;
 let bin2;
 let trashcount = 13;
-let lastMessage = 'In our relentless pursuit of progress, we have overlooked a crucial reality: our planet is suffering. Pollution, in various forms, is suffocating our home. From polluted air to oceans choked with plastic, our actions are pushing our world to the brink. Time is slipping away. We are running out of opportunities to reverse the damage. This is nott just about saving the planet; it is about safeguarding our future. We must act urgently to preserve the Earth, our only home, before it is too late.'
+let lastMessage = 'In our relentless pursuit of progress, we have overlooked a crucial reality: our planet is suffering. Pollution, in various forms, suffocating our home. From polluted air to oceans choked with plastic, our actions are pushing our world to the brink. Time is slipping away. This is not just about saving the planet; it is about safeguarding our future. We must act urgently to preserve the Earth, our only home, before it is too late.'
 let messageChar = 0;
 let margin = 25;
 
@@ -101,23 +101,23 @@ function draw(){
         if (trashcount== 0 && countdown >= 0){ //if won
             
             if (frameCount  < 460){
-                image(pollutionImg[0],0,0);
+                image(rescueImg[0],0, 0, 800,800);
                 endText(2);
             } 
             else if (frameCount < 520){
-                image(pollutionImg[1], 0, 0, 0, 800);
+                image(rescueImg[1], 0, 0, 0, 800);
                 endText(2);
             } 
             else if (frameCount < 580){
-                image(pollutionImg[2], 0, 0);
+                image(rescueImg[2], 0, 0, 0, 800);
                 endText(2);
             }
             else if (frameCount < 640){
-                image(pollutionImg[3], 0, 0, 1000, 800);
+                image(rescueImg[3], 0, 0, 900, 800);
                 endText(2);
             }
             else if (frameCount < 700){
-                image(pollutionImg[4], 0, 0);
+                image(rescueImg[4], 0, 0, 0, 800);
                 endText(2);
             }
             // if (frameCount > 500) frameCount = 0;
@@ -217,7 +217,7 @@ function endPage(){ // displays the letter at the end of the game
     text(currString, margin + 10, margin + 10, width - margin*2, height - margin);// keeps text from going out of web frame
     pop();
 
-    messageChar += random(0,1); // Increase the current character and this also changes teh pace of the characters displayed
+    messageChar += random(0.3,1); // Increase the current character and this also changes teh pace of the characters displayed
 
     playAgain.diplsay(); // displays play again button 
 
@@ -318,7 +318,7 @@ class Garbage{
         strokeWeight(15);
         line(340,560, 480,700);
         line(480,560, 340,700);
-    }
+    } // prints X for the first 2
 
     inbin(){ // checks if the trash item is in either of the bins 
         // bin 1
@@ -340,7 +340,7 @@ class Garbage{
                     stroke(255);
                     strokeWeight(0);
                     this.found = true;
-                }
+                } 
         } //if stat
 
 
