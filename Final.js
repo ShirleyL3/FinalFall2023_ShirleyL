@@ -1,6 +1,8 @@
 // Shirley Landeros
 // Creative Coding Final
 
+// tried to make the game reploop when clicking play again however it wouldnt work; I tried to use redraw(); but using noLoop would break the game
+
 let gamename = "Bin";
 let gamename2 = "Boss"
 
@@ -57,6 +59,7 @@ function setup(){
 }
 
 function draw(){
+    console.log(frameCount)
     if (startp){
         frameCount = 0; // is constantly zero until game page starts 
         startPage();
@@ -96,7 +99,6 @@ function draw(){
                 gamep = false;
                 endPage();
             }
-            // console.log(frameCount);
         }
         if (trashcount== 0 && countdown >= 0){ //if won
             
@@ -156,10 +158,12 @@ function mousePressed(){
          gamep = true
     }
     if (playAgain.inButton(mouseX, mouseY)){ // once play again pressed
-        startp = true;
-        startPage();
         gamep = false;
-        frameCount = frameCount%120;
+        startp = true;
+        redraw();
+        startPage();
+        // redraw();
+
     }
     if (gamep){
         for (let i = 0; i< trashlst.length; i++){ // trash items being pressed 
@@ -248,7 +252,7 @@ function gameScreen(){
 
     image(bin1, 100, 450);
     image(bin2, 500, 487);
-    console.log(mouseX,mouseY);
+    // console.log(mouseX,mouseY);
 }
 
 function timeCount() { // Starts coutdown once on Game Page
@@ -321,8 +325,8 @@ class Garbage{
     } // prints X for the first 2
 
     inbin(){ // checks if the trash item is in either of the bins 
+
         // bin 1
-        
         if (this.x > 100 && this.x < 300 && 
             this.y > 400 && this.y < 600){ // checks if the image is in the area of the garbage bin
                 if (this.type == 1 || this.type == 2 || this.type ==3 || this.type == 5
@@ -343,10 +347,8 @@ class Garbage{
                 } 
         } //if stat
 
-
         //bin2
-        
-        if (this.x>500 && this.x < 700 &&
+        if (this.x>500 && this.x < 700 && 
             this.y >400 && this.y < 600){
                 if (this.type == 0 || this.type ==4 || this.type == 9 || this.type == 10){ // these items belong to bin2
                     for (let i = 0; i < trashlst.length; i++){
